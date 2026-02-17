@@ -1,52 +1,54 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
+{% if search_query %}Результати пошуку{% elif category %}{{ category.name }}{% else %}Каталог товарів{% endif %} | Магазин
+{% endblock %}
+
+{% block content %}
+<h1>
     {% if search_query %}
-        Пошук: {{ search_query }}
+        Результати пошуку за "{{ search_query }}"
     {% elif category %}
         {{ category.name }}
     {% else %}
         Каталог товарів
     {% endif %}
-{% endblock %}
+</h1>
 
-{% block content %}
-    <h1>
-        {% if search_query %}
-            Результати пошуку за "{{ search_query }}"
-        {% elif category %}
-            {{ category.name }}
-        {% else %}
-            Каталог товарів
-        {% endif %}
-    </h1>
-
-    {% include 'main/search_form.html' %}
-
-    <div class="sort-buttons">
-        <a href="?{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">За замовчуванням</a>
-        <a href="?sort=new{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Спочатку нові</a>
-        <a href="?sort=old{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Спочатку старі</a>
-        <a href="?sort=price{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Від дешевих</a>
-        <a href="?sort=-price{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Від дорогих</a>
-        <a href="?sort=name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">За назвою A-Я</a>
-    </div>
-
-    <div class="products-grid">
-        {% for product in products %}
-            <div class="product-card">
-                <a href="{{ product.get_absolute_url }}">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% endif %}
-                    <h3>{{ product.name }}</h3>
-                    <p class="price">{{ product.price }} грн</p>
-                </a>
-            </div>
-        {% empty %}
-            <p>Товари не знайдено.</p>
+<div class="sort-container">
+    <label for="category-select">Категорія:</label>
+    <select id="category-select" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+        <option value="{% url 'main:product_list' %}" {% if not category %}selected{% endif %}>Всі категорії</option>
+        {% for cat in categories %}
+            <option value="{{ cat.get_absolute_url }}" {% if category == cat %}selected{% endif %}>{{ cat.name }}</option>
         {% endfor %}
-    </div>
+    </select>
 
-    {% include 'main/pagination.html' with page_obj=products %}
+    <label for="sort-select">Сортувати за:</label>
+    <select id="sort-select" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+        <option value="?sort=name" {% if current_sort == 'name' %}selected{% endif %}>Назвою (A-Я)</option>
+        <option value="?sort=-name" {% if current_sort == '-name' %}selected{% endif %}>Назвою (Я-A)</option>
+        <option value="?sort=price" {% if current_sort == 'price' %}selected{% endif %}>Ціною (зростання)</option>
+        <option value="?sort=-price" {% if current_sort == '-price' %}selected{% endif %}>Ціною (зменшення)</option>
+        <option value="?sort=new" {% if current_sort == 'new' %}selected{% endif %}>Новинки</option>
+        <option value="?sort=old" {% if current_sort == 'old' %}selected{% endif %}>Старі</option>
+    </select>
+</div>
+
+{% include "main/search_form.html" %}
+
+<div class="products">
+    {% for product in products %}
+        <div class="product-card">
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% endif %}
+            <h3>{{ product.name }}</h3>
+            <p class="price">{{ product.price }} грн</p>
+            <a class="btn" href="{{ product.get_absolute_url }}">Детальніше</a>
+        </div>
+    {% empty %}
+        <p>Товари не знайдено.</p>
+    {% endfor %}
+</div>
+
+<button id="load-more" {% if not products.has_next %}style="display: none;"{% endif %}>Завантажити більше</button>
 {% endblock %}

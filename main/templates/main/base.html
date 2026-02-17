@@ -10,9 +10,6 @@
     <header>
       <nav>
         <a href="{% url 'main:product_list' %}">Каталог</a>
-        {% for cat in categories %}
-        <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
-        {% endfor %}
       </nav>
       <div class="auth-buttons">
         {% if user.is_authenticated %}
@@ -27,5 +24,6 @@
     </header>
     <main>{% block content %}{% endblock %}</main>
     <footer>© 2026 Магазин</footer>
+    <script src="{% static 'js/scripts.js' %}"></script>
   </body>
 </html>

@@ -7,7 +7,7 @@ from .models import Category, Product
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
-    products = Product.objects.filter(is_available=True)  # ← виправлено
+    products = Product.objects.filter(is_available=True)
 
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
@@ -23,7 +23,7 @@ def product_list(request, category_slug=None):
         )
 
     # Сортування
-    current_sort = request.GET.get('sort', '-created_at')  # також виправлено на created_at, якщо у вас created_at
+    current_sort = request.GET.get('sort', '-created_at')
     valid_sorts = {
         'name': 'name',
         '-name': '-name',
