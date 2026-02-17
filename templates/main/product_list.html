@@ -1,0 +1,60 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if category %}
+        {{ category.name }}
+    {% else %}
+        Каталог товарів
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if category %}
+            {{ category.name }}
+        {% else %}
+            Каталог
+        {% endif %}
+    </h1>
+
+    <div class="sort-container">
+        <label for="sort-select">Сортувати за:</label>
+        <select id="sort-select" onchange="applySort(this.value)">
+            <option value="new"    {% if current_sort == 'new'    %}selected{% endif %}>Новіші спочатку</option>
+            <option value="old"    {% if current_sort == 'old'    %}selected{% endif %}>Старіші спочатку</option>
+            <option value="popular"{% if current_sort == 'popular' %}selected{% endif %}>Популярні (за переглядами)</option>
+            <option value="price_low" {% if current_sort == 'price_low'  %}selected{% endif %}>Ціна: за зростанням</option>
+            <option value="price_high"{% if current_sort == 'price_high' %}selected{% endif %}>Ціна: за спаданням</option>
+            <option value="name"   {% if current_sort == 'name'   %}selected{% endif %}>За назвою (А–Я)</option>
+        </select>
+    </div>
+
+    <div class="products-grid">
+        {% for product in products %}
+            <div class="product-card {% if product.featured %}featured{% endif %}">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% endif %}
+                <h3>{{ product.name }}</h3>
+                <p class="price">{{ product.price }} грн</p>
+                <p>{{ product.description|truncatewords:15 }}</p>
+                <div class="meta">Перегляди: {{ product.views }} | {{ product.category }}</div>
+                {% if product.featured %}
+                    <span class="featured-badge">Рекомендовано</span>
+                {% endif %}
+                <a href="{{ product.get_absolute_url }}" class="btn">Детальніше</a>
+            </div>
+        {% empty %}
+            <p>Товарів не знайдено.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        function applySort(sortValue) {
+            let url = new URL(window.location.href);
+            url.searchParams.set('sort', sortValue);
+            window.location.href = url.toString();
+        }
+    </script>
+{% endblock %}

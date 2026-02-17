@@ -1,0 +1,207 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Science+Gothic:wght@100..900&display=swap");
+
+:root {
+  --color-1: #e6f2da;
+  --color-2: #c5dca5;
+  --color-3: #a1c76b;
+  --color-4: #668d35;
+  --color-5: #3d5618;
+  --color-6: #23330e;
+
+  --transparent-color-1: rgba(197, 220, 165, 0.5);
+  --transparent-color-2: rgba(161, 199, 107, 0.5);
+  --transparent-color-3: rgba(102, 141, 53, 0.5);
+  --transparent-color-4: rgba(61, 86, 24, 0.5);
+  --transparent-color-5: rgba(35, 51, 14, 0.5);
+  --transparent-color-6: rgba(27, 39, 3, 0.5);
+
+  --font-1: "Science Gothic", sans-serif;
+  --font-2: "Fira Sans", sans-serif;
+}
+
+body {
+  font-family: var(--font-2);
+  margin: 0;
+  padding: 20px;
+  background: var(--color-1);
+  color: var(--color-6);
+  min-height: 100vh;
+}
+
+.products,
+.products-grid,
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.product-card {
+  background: white;
+  border: 2px solid var(--color-2);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px var(--transparent-color-5);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--transparent-color-4);
+}
+
+.product-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid var(--color-3);
+  margin-bottom: 16px;
+}
+
+.product-card h3 {
+  font-family: var(--font-1);
+  font-size: 1.4rem;
+  margin: 0 0 8px;
+  color: var(--color-5);
+}
+
+.product-card .meta {
+  flex-grow: 1;
+  font-size: 0.95rem;
+  color: var(--color-5);
+  margin-bottom: 12px;
+}
+
+p.price {
+  font-family: var(--font-1);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-4);
+  background: var(--color-2);
+  padding: 8px 16px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 12px 0;
+}
+
+.btn {
+  margin-top: auto;
+  background: var(--color-4);
+  color: white;
+  padding: 12px 20px;
+  text-align: center;
+  border: center;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: var(--color-5);
+}
+
+.unavailable .btn {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.unavailable {
+  opacity: 0.7;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--color-3);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-1);
+}
+
+/* Стилізація сортування (nav) */
+.sort-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--transparent-color-5);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  border: 2px solid var(--color-2);
+}
+
+.sort-container label {
+  font-family: var(--font-1);
+  font-weight: 600;
+  color: var(--color-5);
+  font-size: 1.1rem;
+}
+
+#sort-select {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-family: var(--font-2);
+  border: 2px solid var(--color-3);
+  border-radius: 8px;
+  background: var(--color-1);
+  min-width: 260px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#sort-select:focus {
+  outline: none;
+  border-color: var(--color-4);
+  box-shadow: 0 0 0 4px var(--transparent-color-3);
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  .products,
+  .products-grid,
+  .related-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .product-card img {
+    height: 180px;
+  }
+
+  .sort-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #sort-select {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  .product-card {
+    padding: 16px;
+  }
+
+  .product-card img {
+    height: 160px;
+  }
+}
