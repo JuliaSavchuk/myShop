@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+{% block title %}Реєстрація{% endblock %}
+{% block content %}
+<h2>Реєстрація</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form %}
+    <p>{{ field.label_tag }} {{ field }} {{ field.errors }} {{ field.help_text }}</p>
+  {% endfor %}
+  <button type="submit">Зареєструватися</button>
+</form>
+<p><a href="{% url 'accounts:login' %}">Вхід</a></p>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Магазин{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="{% url 'main:product_list' %}">Каталог</a>
+        {% for cat in categories %}
+        <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+        {% endfor %}
+      </nav>
+      <div class="auth-buttons">
+        {% if user.is_authenticated %}
+        {% if user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:index' %}">Адмінка</a>{% endif %}
+        <a class="btn btn-primary" href="{% url 'accounts:profile' %}">Профіль</a>
+        <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Вийти</a>
+        {% else %}
+        <a class="btn btn-primary" href="{% url 'accounts:login' %}">Вхід</a>
+        <a class="btn btn-primary" href="{% url 'accounts:register' %}">Реєстрація</a>
+        {% endif %}
+      </div>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>© 2026 Магазин</footer>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    {% if search_query %}
+        Пошук: {{ search_query }}
+    {% elif category %}
+        {{ category.name }}
+    {% else %}
+        Каталог товарів
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if search_query %}
+            Результати пошуку за "{{ search_query }}"
+        {% elif category %}
+            {{ category.name }}
+        {% else %}
+            Каталог товарів
+        {% endif %}
+    </h1>
+
+    {% include 'main/search_form.html' %}
+
+    <div class="sort-buttons">
+        <a href="?{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">За замовчуванням</a>
+        <a href="?sort=new{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Спочатку нові</a>
+        <a href="?sort=old{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Спочатку старі</a>
+        <a href="?sort=price{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Від дешевих</a>
+        <a href="?sort=-price{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Від дорогих</a>
+        <a href="?sort=name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">За назвою A-Я</a>
+    </div>
+
+    <div class="products-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <a href="{{ product.get_absolute_url }}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% endif %}
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">{{ product.price }} грн</p>
+                </a>
+            </div>
+        {% empty %}
+            <p>Товари не знайдено.</p>
+        {% endfor %}
+    </div>
+
+    {% include 'main/pagination.html' with page_obj=products %}
+{% endblock %}
