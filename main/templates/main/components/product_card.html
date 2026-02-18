@@ -1,0 +1,21 @@
+{% load shop_filters %}
+
+<div class="product-card">
+  {% if product.image %}
+  <img src="{{ product.image.url }}" alt="{{ product.name }}">
+  {% endif %}
+
+  <h3>{{ product.name }}</h3>
+  <div class="meta">{{ product.description|truncatewords:15 }}</div>
+
+  {% if discount > 0 %}
+  <span class="featured-badge">-{{ discount }}%</span>
+  <p class="price"><del>{{ product.price|currency }}</del> {{ final_price|currency }}</p>
+  {% else %}
+  <p class="price">{{ product.price|currency }}</p>
+  {% endif %}
+
+  <a href="{{ product.get_absolute_url }}" class="btn">
+    Детальніше
+  </a>
+</div>

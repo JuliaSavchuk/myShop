@@ -61,7 +61,7 @@ nav a {
 .products-grid,
 .related-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 24px;
   margin: 0 auto;
   max-width: 1400px;
@@ -344,6 +344,103 @@ label {
     margin-top: 10px;
 }
 
+.pagination {
+    padding: 15px;
+    font-size: 25px;
+}
+
+.pagination a {
+    color: var(--color-4);
+}
+
+.col-md-3 {
+    padding: 20px;
+}
+
+/* Популярні товари — бічна панель */
+.popular-sidebar {
+    border: 5px solid var(--color-4);
+    border-radius: 10px;
+    padding: 20px 5px;
+    background: var(--color-2);
+}
+
+.popular-sidebar h3 {
+  font-family: var(--font-1);
+  font-size: 1.4rem;
+  color: var(--color-5);
+  margin: 0 0 1.2rem;
+  text-align: center;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid var(--color-3);
+}
+
+.popular-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.popular-item {
+    display: block;
+    padding: 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--color-6);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.popular-item:hover {
+  background: var(--color-2);
+  border-color: var(--color-3);
+  transform: translateX(4px);
+}
+
+.popular-item__content h4 {
+  font-family: var(--font-1);
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+  color: var(--color-5);
+  line-height: 1.3;
+}
+
+.popular-item__price {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.popular-item__price .current-price {
+  color: var(--color-4);
+}
+
+.popular-item__price .old-price {
+  color: #888;
+  font-size: 0.95rem;
+  margin-right: 0.6rem;
+}
+
+.views {
+  color: var(--color-5);
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.popular-empty {
+  text-align: center;
+  color: var(--color-5);
+  opacity: 0.7;
+  padding: 1.5rem 0;
+  font-style: italic;
+}
+
+/* Адаптивність */
+@media (max-width: 992px) {
+  .popular-sidebar {
+    margin-top: 2rem;
+  }
+}
 
 /* Адаптивність */
 @media (max-width: 768px) {

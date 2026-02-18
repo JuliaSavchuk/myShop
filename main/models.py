@@ -41,6 +41,7 @@ class Product(models.Model):
     )
     description = models.TextField(verbose_name="Опис")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна")
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Ціна зі знижкою")
     image = models.ImageField(upload_to="products/%Y/%m/%d", blank=True, null=True, verbose_name="Зображення")
     views = models.PositiveIntegerField(default=0, verbose_name="Перегляди")
     featured = models.BooleanField(default=False, verbose_name="Рекомендований")

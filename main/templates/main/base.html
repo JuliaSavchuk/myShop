@@ -1,4 +1,4 @@
-{% load static %}
+{% load static shop_tags %}
 <!doctype html>
 <html lang="uk">
   <head>
@@ -10,8 +10,12 @@
     <header>
       <nav>
         <a href="{% url 'main:product_list' %}">Каталог</a>
+        {% for cat in categories %}
+        <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+        {% endfor %}
       </nav>
       <div class="auth-buttons">
+        {{ user_greeting }}
         {% if user.is_authenticated %}
         {% if user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:index' %}">Адмінка</a>{% endif %}
         <a class="btn btn-primary" href="{% url 'accounts:profile' %}">Профіль</a>
@@ -24,6 +28,5 @@
     </header>
     <main>{% block content %}{% endblock %}</main>
     <footer>© 2026 Магазин</footer>
-    <script src="{% static 'js/scripts.js' %}"></script>
   </body>
 </html>

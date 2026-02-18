@@ -1,0 +1,28 @@
+{% load shop_filters %}
+
+<div class="popular-sidebar">
+  <h3>Популярні товари</h3>
+  
+  <div class="popular-list">
+    {% for product in popular_products %}
+    <a href="{{ product.get_absolute_url }}" class="popular-item">
+      <div class="popular-item__content">
+        <h4>{{ product.name|truncatewords:6 }}</h4>
+        
+        <div class="popular-item__price">
+          {% if product.discount_price and product.discount_price < product.price %}
+            <span class="old-price"><del>{{ product.price|currency }}</del></span>
+            <span class="current-price">{{ product.discount_price|currency }}</span>
+          {% else %}
+            <span class="current-price">{{ product.price|currency }}</span>
+          {% endif %}
+        </div>
+        
+        <small class="views">{{ product.views|compact_number }} переглядів</small>
+      </div>
+    </a>
+    {% empty %}
+    <div class="popular-empty">Наразі немає популярних товарів</div>
+    {% endfor %}
+  </div>
+</div>

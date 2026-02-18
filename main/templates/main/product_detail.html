@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %} 
-{% load static %} 
+{% load static shop_filters shop_tags %} 
 {% block title %}
 {{product.name }}
 {% endblock %}
@@ -8,10 +8,16 @@
 <div class="product-detail">
   {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}"/>{% endif %}
   <h1>{{ product.name }}</h1>
-  <p class="price">{{ product.price }} грн</p>
+  {% if product.discount_price and product.discount_price < product.price %}
+  <p class="h5 text-success">{{ product.discount_price|currency }}</p>
+  <p><del>{{ product.price|currency }}</del> (знижка {{ product.price|discount_percentage:product.discount_price }}%)</p>
+  {% else %}
+  <p class="price h5">{{ product.price|currency }}</p>
+  {% endif %}
   <p>
-    <strong>Категорія:</strong> {{ product.category }} | Перегляди: {{product.views }}
+    <strong>Категорія:</strong> {{ product.category }} | Перегляди: {{product.views|compact_number }}
   </p>
+  <p>Додано: {{ product.created_at|time_ago }}</p>
   <div class="description">{{ product.description|linebreaks }}</div>
   <a href="{% url 'main:product_list' %}" class="btn">До каталогу</a>
   <button class="btn">Додати до кошика</button>
@@ -20,12 +26,7 @@
 <h2>Схожі товари</h2>
 <div class="related-grid">
   {% for p in related_products %}
-  <div class="product-card">
-    {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}" />{% endif%}
-    <h3>{{ p.name }}</h3>
-    <p>{{ p.price }} грн</p>
-    <a href="{{ p.get_absolute_url }}">Детальніше</a>
-  </div>
+    {% show_product_card p %}
   {% endfor %}
 </div>
 {% endblock %}

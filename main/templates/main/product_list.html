@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% load shop_filters shop_tags %}
+
 {% block title %}
     {% if search_query %}
         Пошук: {{ search_query }}
@@ -42,60 +44,21 @@
             <option value="?sort=old" {% if current_sort == 'old' %}selected{% endif %}>Старі</option>
         </select>
     </div>
+    
+    <div class="row">
+      <div class="col-md-9">
+        <div class="products-grid">
+            {% for product in products %}
+                {% show_product_card product %}
+            {% empty %}
+                <p>Товари не знайдено.</p>
+            {% endfor %}
+        </div>
 
-    <div id="products-container" class="products-grid">
-        {% include 'main/_products.html' with products=products.object_list %}
+        {% include 'main/pagination.html' with page_obj=products %}
+      </div>
+      <div class="col-md-3">
+        {% show_popular_products %}
+      </div>
     </div>
-
-    <button id="load-more-btn" 
-            class="btn btn-load-more" 
-            data-offset="6"
-            data-category-slug="{% if category %}{{ category.slug }}{% endif %}">
-        Показати більше
-    </button>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        if (!loadMoreBtn) return;
-
-        let offset = parseInt(loadMoreBtn.getAttribute('data-offset'));
-        const categorySlug = loadMoreBtn.getAttribute('data-category-slug') || '';
-
-        loadMoreBtn.addEventListener('click', function() {
-            let url = `/load-more/?offset=${offset}`;
-            if (categorySlug) {
-                url += `&category_slug=${encodeURIComponent(categorySlug)}`;
-            }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            ['q', 'sort'].forEach(param => {
-                if (urlParams.has(param)) {
-                    url += `&${param}=${encodeURIComponent(urlParams.get(param))}`;
-                }
-            });
-
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    const container = document.getElementById('products-container');
-                    container.insertAdjacentHTML('beforeend', data.html);
-
-                    offset = data.new_offset;
-                    loadMoreBtn.setAttribute('data-offset', offset);
-
-                    if (!data.has_more) {
-                        loadMoreBtn.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Помилка:', error);
-                    alert('Помилка завантаження товарів. Спробуйте пізніше.');
-                });
-        });
-    });
-    </script>
 {% endblock %}
