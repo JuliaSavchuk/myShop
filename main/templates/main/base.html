@@ -18,6 +18,7 @@
         {{ user_greeting }}
         {% if user.is_authenticated %}
         {% if user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:index' %}">Адмінка</a>{% endif %}
+        <a class="btn btn-primary" href="{% url 'contact:contact' %}">Контакти</a>
         <a class="btn btn-primary" href="{% url 'accounts:profile' %}">Профіль</a>
         <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Вийти</a>
         {% else %}

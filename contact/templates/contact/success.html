@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Повідомлення відправлено{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow text-center p-5">
+                <i class="fas fa-check-circle text-success fa-7x mb-4"></i>
+                <h2 class="text-success">Дякуємо!</h2>
+                <p class="lead">Ваше повідомлення успішно відправлено. Ми зв'яжемося з вами найближчим часом.</p>
+                
+                <div class="mt-4">
+                    <a href="{% url 'main:product_list' %}" class="btn btn-primary me-3">
+                        <i class="fas fa-home"></i> На головну
+                    </a>
+                    <a href="{% url 'contact:contact' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-envelope"></i> Надіслати ще
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
