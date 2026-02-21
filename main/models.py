@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
+from django.db.models import Avg, Count, Q
 
 
 class Category(models.Model):
@@ -59,3 +60,29 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('main:product_detail', kwargs={'id': self.id, 'slug': self.slug})
+    
+    def get_average_rating(self):
+        reviews = self.reviews.filter(is_active=True)
+        if reviews.exists():
+            return round(reviews.aggregate(Avg('rating'))['rating__avg'], 1)
+        return 0.0
+
+    def get_reviews_count(self):
+        return self.reviews.filter(is_active=True).count()
+
+    def get_rating_distribution(self):
+        reviews = self.reviews.filter(is_active=True)
+        total = reviews.count()
+        if total == 0:
+            return [{'stars': i, 'count': 0, 'percentage': 0} for i in range(5, 0, -1)]
+        
+        counts = reviews.aggregate(**{
+            f'count{i}': Count('rating', filter=Q(rating=i)) for i in range(1, 6)
+        })
+        
+        distribution = []
+        for i in range(5, 0, -1):
+            count = counts.get(f'count{i}', 0)
+            percentage = round((count / total) * 100) if total > 0 else 0
+            distribution.append({'stars': i, 'count': count, 'percentage': percentage})
+        return distribution

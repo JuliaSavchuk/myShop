@@ -1,0 +1,48 @@
+{% extends 'main/base.html' %}
+{% block title %}Редагувати відгук{% endblock %}
+
+{% block content %}
+<div class="review-form-container">
+  <h2>Редагування відгуку</h2>
+  
+  <form method="post" class="review-form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    
+    <div class="form-group">
+      {{ form.rating.label_tag }}
+      <div class="star-rating">
+        {{ form.rating }}
+      </div>
+      {{ form.rating.errors }}
+    </div>
+    
+    <div class="form-group">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+    
+    <div class="form-group">
+      {{ form.content.label_tag }}
+      {{ form.content }}
+      {{ form.content.errors }}
+    </div>
+    
+    <div class="form-group">
+      {{ form.advantages.label_tag }}
+      {{ form.advantages }}
+      {{ form.advantages.errors }}
+    </div>
+    
+    <div class="form-group">
+      {{ form.disadvantages.label_tag }}
+      {{ form.disadvantages }}
+      {{ form.disadvantages.errors }}
+    </div>
+    
+    <button type="submit" class="btn btn-success">Зберегти зміни</button>
+    <a href="{{ review.product.get_absolute_url }}" class="btn btn-secondary">Скасувати</a>
+  </form>
+</div>
+{% endblock %}

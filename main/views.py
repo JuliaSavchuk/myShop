@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .models import Category, Product
-
+from reviews.models import Review
 
 def get_filtered_products(request, category=None):
     products = Product.objects.filter(is_available=True)
@@ -75,4 +75,19 @@ def load_more_products(request):
 
 def product_detail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, is_available=True)
-    return render(request, 'main/product_detail.html', {'product': product})
+    
+    # Дані для відгуків
+    reviews = product.reviews.filter(is_active=True).order_by('-created_at')
+    user_review = None
+    if request.user.is_authenticated:
+        user_review = Review.objects.filter(product=product, author=request.user, is_active=True).first()
+
+    context = {
+        'product': product,
+        'reviews': reviews,
+        'reviews_count': reviews.count(),
+        'average_rating': product.get_average_rating(),
+        'rating_distribution': product.get_rating_distribution(),
+        'user_review': user_review,
+    }
+    return render(request, 'main/product_detail.html', context)

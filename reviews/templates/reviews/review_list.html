@@ -1,0 +1,98 @@
+{% load static %}
+
+<div class="reviews-section">
+  <h2>Відгуки про товар</h2>
+  
+  <!-- Статистика -->
+  <div class="rating-summary">
+    <div class="average-rating">
+      <span class="big-stars">{{ average_rating|floatformat:1 }} ★</span>
+      <span class="reviews-count">({{ reviews_count }} відгуків)</span>
+    </div>
+    
+    <div class="rating-bars">
+      {% for item in rating_distribution %}
+      <div class="bar-row">
+        <span class="stars-label">{{ item.stars }}★</span>
+        <div class="progress-bar">
+          <div class="progress" data-percentage="{{ item.percentage }}"></div>
+        </div>
+        <span class="count">{{ item.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Кнопка додати відгук -->
+  {% if user.is_authenticated and not user_review %}
+  <a href="{% url 'reviews:add_review' product.id %}" class="btn btn-primary">Залишити відгук</a>
+  {% elif user.is_authenticated %}
+  <p class="my-review-notice">Ви вже залишили відгук.</p>
+  {% else %}
+  <p><a href="{% url 'accounts:login' %}">Увійдіть</a>, щоб залишити відгук.</p>
+  {% endif %}
+
+  <!-- Список відгуків -->
+  <div class="reviews-list">
+    {% for review in reviews %}
+    <div class="review-card">
+      <div class="review-header">
+        <div class="author-info">
+          <strong>{{ review.author.username }}</strong>
+          <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
+        </div>
+        <div class="review-stars">{{ review.get_rating_display_stars }}</div>
+      </div>
+      
+      <h4 class="review-title">{{ review.title }}</h4>
+      <p class="review-content">{{ review.content|linebreaksbr }}</p>
+      
+      {% if review.advantages %}
+      <div class="advantages">
+        <strong>Переваги:</strong> {{ review.advantages|linebreaksbr }}
+      </div>
+      {% endif %}
+      {% if review.disadvantages %}
+      <div class="disadvantages">
+        <strong>Недоліки:</strong> {{ review.disadvantages|linebreaksbr }}
+      </div>
+      {% endif %}
+
+      <div class="review-footer">
+        <button onclick="markHelpful('{{ review.id }}')" class="helpful-btn">
+          Корисно <span class="count">{{ review.helpful_count }}</span>
+        </button>
+        
+        {% if user.is_authenticated and user.id == review.author.id %}
+        <div class="actions">
+          <a href="{% url 'reviews:edit_review' review.id %}" class="btn-small">Редагувати</a>
+          <form method="post" action="{% url 'reviews:delete_review' review.id %}" style="display:inline;" onsubmit="return confirm('Видалити відгук?');">
+            {% csrf_token %}
+            <button type="submit" class="btn-small btn-danger">Видалити</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p>Поки що немає відгуків. Будьте першим!</p>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Встановлення ширини прогрес-барів
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.progress').forEach(function(bar) {
+      var percentage = bar.getAttribute('data-percentage');
+      if (percentage) {
+        bar.style.width = percentage + '%';
+      }
+    });
+  });
+
+  function markHelpful(reviewId) {
+    fetch('/reviews/helpful/' + reviewId + '/', { method: 'GET' })
+      .then(function() { location.reload(); });
+  }
+</script>

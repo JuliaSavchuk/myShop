@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('main.urls')),
     path('', include('accounts.urls', namespace='accounts')),
     path('contact/', include('contact.urls', namespace='contact')),
+    path('reviews/', include('reviews.urls')),
 ]
 
 if settings.DEBUG:
