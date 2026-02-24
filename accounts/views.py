@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from main.models import Category
+from cart.utils import merge_anonymous_cart_to_user
+from cart.models import CartItem 
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -13,7 +15,10 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect(next_url if next_url else 'main:product_list')
+            merge_anonymous_cart_to_user(request, user)
+            response = redirect(next_url if next_url else 'main:product_list')
+            response.delete_cookie('cart')
+            return response
     else:
         form = AuthenticationForm()
     categories = Category.objects.all()
@@ -21,7 +26,9 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('main:product_list')
+    response = redirect('main:product_list')
+    response.delete_cookie('cart')
+    return response
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -31,7 +38,10 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('main:product_list')
+            merge_anonymous_cart_to_user(request, user)
+            response = redirect('main:product_list')
+            response.delete_cookie('cart')
+            return response
     else:
         form = UserCreationForm()
     categories = Category.objects.all()
