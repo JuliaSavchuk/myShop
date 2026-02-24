@@ -1,0 +1,115 @@
+{% extends 'main/base.html' %}
+{% load static shop_filters %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+    <div class="cart-summary">
+        <h2>Підсумок замовлення</h2>
+        <p>Загальна ціна без знижки: <strong>{{ total_without_discount|currency }}</strong></p>
+        <p class="discount-text">Знижка: <strong>{{ total_discount|currency }}</strong></p>
+        <p class="final-price">Кінцева ціна: <strong>{{ final_total|currency }}</strong></p>
+        <a href="#" class="btn" style="margin-top: 20px;">Оформити замовлення</a>
+    </div>
+
+    <div class="cart-items">
+        <h2>Товари в корзині ({{ cart_items|length }})</h2>
+        {% for item in cart_items %}
+        <div class="cart-item">
+            {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+            {% endif %}
+            
+            <div class="cart-item-info">
+                <h3>{{ item.product.name }}</h3>
+                <p>Ціна за одиницю: {{ item.original_unit_price|currency }}
+                   {% if item.unit_price != item.original_unit_price %}
+                   (зі знижкою {{ item.unit_price|currency }})
+                   {% endif %}
+                </p>
+                <p>Разом за товар: <strong>{{ item.item_total|currency }}</strong></p>
+            </div>
+
+            <div class="quantity-wrapper">
+                <form method="post" action="{% url 'cart:update_quantity' item.product.id %}" class="quantity-form">
+                    {% csrf_token %}
+                    <div class="quantity-control">
+                        <button type="button" class="qty-btn minus" aria-label="Зменшити">-</button>
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="qty-input" aria-label="Кількість">
+                        <button type="button" class="qty-btn plus" aria-label="Збільшити">+</button>
+                    </div>
+                </form>
+            </div>
+
+            <form method="post" action="{% url 'cart:remove_from_cart' item.product.id %}" class="remove-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Видалити</button>
+            </form>
+        </div>
+        {% empty %}
+        <p>Корзина порожня. Перейдіть до каталогу, щоб додати товари.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Quantity JS loaded successfully'); 
+
+    document.querySelectorAll('.quantity-form').forEach(function(form) {
+        const minusBtn = form.querySelector('.minus');
+        const plusBtn  = form.querySelector('.plus');
+        const input    = form.querySelector('.qty-input');
+
+        function updateCart() {
+            const fd = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: fd,
+                headers: {
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); 
+                } else {
+                    console.error('Помилка оновлення');
+                }
+            })
+            .catch(err => console.error('Fetch error:', err));
+        }
+
+        minusBtn.addEventListener('click', function() {
+            let val = parseInt(input.value);
+            if (val > 1) {
+                input.value = val - 1;
+                updateCart();
+            }
+        });
+
+        plusBtn.addEventListener('click', function() {
+            let val = parseInt(input.value);
+            input.value = val + 1;
+            updateCart();
+        });
+
+        input.addEventListener('change', function() {
+            if (parseInt(this.value) < 1) this.value = 1;
+            updateCart();
+        });
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (parseInt(this.value) < 1) this.value = 1;
+                updateCart();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -18,16 +18,18 @@
         {{ user_greeting }}
         {% if user.is_authenticated %}
         {% if user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:index' %}">Адмінка</a>{% endif %}
-        <a class="btn btn-primary" href="{% url 'contact:contact' %}">Контакти</a>
+        <a href="{% url 'cart:cart_detail' %}" class="btn">Корзина ({{ cart_count }})</a>
         <a class="btn btn-primary" href="{% url 'accounts:profile' %}">Профіль</a>
         <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Вийти</a>
         {% else %}
         <a class="btn btn-primary" href="{% url 'accounts:login' %}">Вхід</a>
         <a class="btn btn-primary" href="{% url 'accounts:register' %}">Реєстрація</a>
+        <a class="btn btn-primary" href="{% url 'contact:contact' %}">Контакти</a>
         {% endif %}
       </div>
     </header>
     <main>{% block content %}{% endblock %}</main>
     <footer>© 2026 Магазин</footer>
+    {% block extra_js %}{% endblock %}
   </body>
 </html>

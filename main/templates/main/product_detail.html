@@ -20,7 +20,10 @@
   <p>Додано: {{ product.created_at|time_ago }}</p>
   <div class="description">{{ product.description|linebreaks }}</div>
   <a href="{% url 'main:product_list' %}" class="btn">До каталогу</a>
-  <button class="btn">Додати до кошика</button>
+  <form method="post" action="{% url 'cart:add_to_cart' product.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn">Додати до кошика</button>
+  </form>
 </div>
 
 <h2>Схожі товари</h2>
